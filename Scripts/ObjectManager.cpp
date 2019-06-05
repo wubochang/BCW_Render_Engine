@@ -79,9 +79,11 @@ void ObjectManager::InitialObjects()
 	}
 }
 
-void ObjectManager::Update(double deltaTime)
+void ObjectManager::Update()
 {
 	Camera::GetMainCamera().Update();
+
+	double deltaTime = Timer::getInstance().GetDeltaTime();
 
 	static double s_time = 0;
 	static bool s_rotateMainLight = true;

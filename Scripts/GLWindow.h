@@ -12,6 +12,7 @@
 #include "Shader/ShaderManager.h"
 #include "MaterialManager.h"
 #include "InputManager.h"
+#include "Timer.h"
 
 #define SCR_WIDTH (800)
 #define SCR_HEIGHT (600)

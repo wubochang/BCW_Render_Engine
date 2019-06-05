@@ -6,6 +6,7 @@
 #include "MeshLoader.h"
 #include "Light.h"
 #include "InputManager.h"
+#include "Timer.h"
 #include "Misc.h"
 
 #include <vector>
@@ -21,7 +22,7 @@ public:
 	~ObjectManager() {};
 
 	void Initialize();
-	void Update(double deltaTime);
+	void Update();
 
 	Mesh* GetCubeMesh()
 	{

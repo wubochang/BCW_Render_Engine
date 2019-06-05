@@ -70,14 +70,11 @@ void GLWindow::RenderScene()
 
 bool GLWindow::Run()
 {
-	static float oldTime = glfwGetTime();
+	Timer::getInstance().Tick();
 
 	InputManager::getInstance().processInput(m_window);
 
-	double newTime = glfwGetTime();
-	float deltaTime = newTime - oldTime;
-	oldTime = newTime;
-	ObjectManager::getInstance().Update(deltaTime);
+	ObjectManager::getInstance().Update();
 	RenderManager::getInstance().Render();
 
 	RenderScene();

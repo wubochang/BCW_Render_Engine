@@ -1,31 +1,33 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
+#include "GLWindow.h"
+#include "Misc.h"
+
 class Timer
 {
-public:
-	static Timer& getInstance()
-	{
-		static Timer instance;
+	MAKE_SINGLETON(Timer)
 
-		return instance;
-	}
+public:
 
 	void Tick()
 	{
+		static double oldTime = glfwGetTime();
+		double newTime = glfwGetTime();
+		m_deltaTime = newTime - oldTime;
+		oldTime = newTime;
 	}
 
 	// get delta time between current tick and previous tick
-	float GetDeltaTime()
+	double GetDeltaTime()
 	{
+		return m_deltaTime;
 	}
 
 private:
 
-	Timer() {}
+	double m_deltaTime;
 
-	Timer(Timer const&) = delete;
-	void operator=(Timer const&) = delete;
 };
 
 #endif // !_TIMER_H_

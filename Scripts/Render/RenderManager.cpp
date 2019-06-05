@@ -257,7 +257,11 @@ void RenderManager::Render()
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	g_textRenderer.RenderText("Sample Text", SCR_WIDTH - 300, SCR_HEIGHT - 50, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
+	{
+		int fps = (int)round(1.0f / Timer::getInstance().GetDeltaTime());
+		std::string fpsStr = std::to_string(fps) + "FPS";
+		g_textRenderer.RenderText(fpsStr, SCR_WIDTH - 150, SCR_HEIGHT - 50, 0.8f, glm::vec3(0.3f, 0.7f, 0.9f));
+	}
 	glDisable(GL_BLEND);
 	//m_uiObject->RenderUIObject(0.0);
 }

@@ -84,7 +84,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\lib\vs2015\x86\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

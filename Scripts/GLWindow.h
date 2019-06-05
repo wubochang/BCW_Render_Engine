@@ -4,6 +4,7 @@
 
 #include "glad_include.h"
 #include <GLFW/glfw3.h>
+#include <wingdi.h>
 
 #include <iostream>
 
@@ -20,6 +21,9 @@
 #define SHADOW_WIDTH (1024)
 #define SHADOW_HEIGHT (1024)
 
+typedef void (APIENTRY *PFNWGLEXTSWAPCONTROLPROC) (int);
+typedef int(*PFNWGLEXTGETSWAPINTERVALPROC) (void);
+
 class GLWindow
 {
 public:
@@ -28,15 +32,36 @@ public:
 	~GLWindow();
 
 	bool Initialize(int width, int height);
-	void InitManagers();
 	void Shutdown();
 
 	bool Run();
 	void RenderScene();
 
+	bool IsVSyncEnabled()
+	{
+		//return (wglGetSwapIntervalEXT() > 0);
+		return m_vsyncEnabled;
+	}
+
+	void SetVSyncState(bool enable)
+	{
+		if (enable)
+			wglSwapIntervalEXT(1);
+		else
+			wglSwapIntervalEXT(0);
+		m_vsyncEnabled = enable;
+	}
+
+
 private:
 
+	bool InitVSync();
+	void InitManagers();
 	GLFWwindow* m_window;
+
+	PFNWGLEXTSWAPCONTROLPROC wglSwapIntervalEXT = nullptr;
+	PFNWGLEXTGETSWAPINTERVALPROC wglGetSwapIntervalEXT = nullptr;
+	bool m_vsyncEnabled;
 
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	{

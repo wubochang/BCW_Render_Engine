@@ -41,6 +41,22 @@ bool GLWindow::Initialize(int width, int height)
 
 	InitManagers();
 
+	InitVSync();
+
+	return true;
+}
+
+bool GLWindow::InitVSync()
+{
+	// glGetString not working for no reason
+	//char* extensions = (char*)glGetString(GL_EXTENSIONS);
+	//if (strstr(extensions, "WGL_EXT_swap_control")) {
+	wglSwapIntervalEXT = (PFNWGLEXTSWAPCONTROLPROC)wglGetProcAddress("wglSwapIntervalEXT");
+	wglGetSwapIntervalEXT = (PFNWGLEXTGETSWAPINTERVALPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
+
+
+	// disable vsync by default
+	SetVSyncState(false);
 	return true;
 }
 
@@ -78,6 +94,11 @@ bool GLWindow::Run()
 	RenderManager::getInstance().Render();
 
 	RenderScene();
+
+	if (InputManager::getInstance().GetKeyDown(GLFW_KEY_V))
+	{
+		SetVSyncState(!IsVSyncEnabled());
+	}
 
 	return !glfwWindowShouldClose(m_window);
 }

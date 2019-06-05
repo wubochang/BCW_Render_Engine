@@ -2,15 +2,18 @@
 #define _SHADER_MANAGER_H_
 
 #include "Shader.h"
+#include "Misc.h"
 
 #include <unordered_map>
 #include <string>
 
 class ShaderManager
 {
+	MAKE_SINGLETON(ShaderManager)
+
 public:
-	ShaderManager();
-	~ShaderManager();
+
+	~ShaderManager() {};
 
 	void Initialize();
 
@@ -20,7 +23,5 @@ private:
 
 	std::unordered_map<std::string, Shader*> m_shaders;
 };
-
-extern ShaderManager g_shaderManager;
 
 #endif // !_SHADER_MANAGER_H_

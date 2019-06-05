@@ -1,15 +1,5 @@
 #include "MaterialManager.h"
 
-MaterialManager g_materialManager;
-
-MaterialManager::MaterialManager()
-{
-}
-
-MaterialManager::~MaterialManager()
-{
-}
-
 void MaterialManager::Initialize()
 {
 	m_materials = std::unordered_map<std::string, Material*>();

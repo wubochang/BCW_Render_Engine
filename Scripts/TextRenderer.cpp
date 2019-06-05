@@ -77,7 +77,7 @@ bool TextRenderer::Initialize()
 	FT_Done_FreeType(ft);
 
 	// init shader
-	m_textShader = g_shaderManager.GetShader("TextShader");
+	m_textShader = ShaderManager::getInstance().GetShader("TextShader");
 	m_uiMesh = new UIMesh();
 	m_uiMesh->Initialize();
 

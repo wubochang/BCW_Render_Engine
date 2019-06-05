@@ -3,14 +3,17 @@
 
 #include "Material.h"
 
+#include "Misc.h"
+
 #include <unordered_map>
 #include <string>
 
 class MaterialManager
 {
+	MAKE_SINGLETON(MaterialManager)
+
 public:
-	MaterialManager();
-	~MaterialManager();
+	~MaterialManager() {}
 
 	void Initialize();
 
@@ -25,7 +28,5 @@ private:
 
 	std::unordered_map<std::string, Material*> m_materials;
 };
-
-extern MaterialManager g_materialManager;
 
 #endif // !_MATERIAL_MANAGER_H_

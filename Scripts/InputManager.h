@@ -5,12 +5,22 @@
 #include "GLWindow.h"
 #include "Camera.h"
 
+#include "Misc.h"
+
 class InputManager
 {
+	MAKE_SINGLETON(InputManager)
+
 public:
-	InputManager();
-	InputManager(const InputManager&);
-	~InputManager();
+	~InputManager() {};
+
+	void Initialize()
+	{
+		ZeroMemory(&m_keys, sizeof(m_keys));
+		ZeroMemory(&m_keysPrev, sizeof(m_keysPrev));
+		ZeroMemory(&m_mouseKeys, sizeof(m_mouseKeys));
+	}
+
 
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
@@ -72,7 +82,5 @@ private:
 
 	glm::vec2 m_mousePosition;
 };
-
-extern InputManager g_inputManager;
 
 #endif // !_INPUT_MANAGER_H_

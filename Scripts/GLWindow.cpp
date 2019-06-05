@@ -46,13 +46,14 @@ bool GLWindow::Initialize(int width, int height)
 
 void GLWindow::InitManagers()
 {
-	g_materialManager.Initialize();
+	MaterialManager::getInstance().Initialize();
 
 	// object manager needs to be initialized AFTER material manager
-	g_objectManager.Initialize();
+	ObjectManager::getInstance().Initialize();
 
-	g_renderManager.Initialize();
-	g_shaderManager.Initialize();
+	RenderManager::getInstance().Initialize();
+	ShaderManager::getInstance().Initialize();
+	InputManager::getInstance().Initialize();
 }
 
 void GLWindow::Shutdown()
@@ -71,13 +72,13 @@ bool GLWindow::Run()
 {
 	static float oldTime = glfwGetTime();
 
-	g_inputManager.processInput(m_window);
+	InputManager::getInstance().processInput(m_window);
 
 	double newTime = glfwGetTime();
 	float deltaTime = newTime - oldTime;
 	oldTime = newTime;
-	g_objectManager.Update(deltaTime);
-	g_renderManager.Render();
+	ObjectManager::getInstance().Update(deltaTime);
+	RenderManager::getInstance().Render();
 
 	RenderScene();
 

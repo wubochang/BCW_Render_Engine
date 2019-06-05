@@ -1,25 +1,17 @@
 #include "ObjectManager.h"
 
-ObjectManager g_objectManager;
-
-ObjectManager::ObjectManager()
-{
-	m_cubeMesh = nullptr;
-}
-
-ObjectManager::~ObjectManager()
-{
-}
-
 void ObjectManager::Initialize()
 {
+	m_cubeMesh = nullptr;
+
 	LoadMeshes();
 
 	InitialObjects();
 
 	InitialLights();
 
-	g_mainCamera.Initialize();
+	Camera::GetMainCamera().Initialize();
+	Camera::GetMainCamera().Initialize();
 }
 
 void ObjectManager::LoadMeshes()
@@ -44,7 +36,7 @@ void ObjectManager::LoadMeshes()
 void ObjectManager::InitialObjects()
 {
 	Mesh* m = GetMesh("box");
-	auto sphereMats = g_materialManager.GetMaterials({
+	auto sphereMats = MaterialManager::getInstance().GetMaterials({
 		"ConcreteMandala",
 		//"Brick",
 		//"Tile025",
@@ -89,7 +81,7 @@ void ObjectManager::InitialObjects()
 
 void ObjectManager::Update(double deltaTime)
 {
-	g_mainCamera.Update();
+	Camera::GetMainCamera().Update();
 
 	static double s_time = 0;
 	static bool s_rotateMainLight = true;
@@ -101,18 +93,18 @@ void ObjectManager::Update(double deltaTime)
 		dirLight->GetTransform()->SetFowardUp(glm::vec3(-cos(s_time), -1.0f, -sin(s_time)), glm::vec3(0, 1, 0));
 	}
 
-	if (g_inputManager.GetKeyDown(GLFW_KEY_SPACE))
+	if (InputManager::getInstance().GetKeyDown(GLFW_KEY_SPACE))
 	{
 		s_rotateMainLight = !s_rotateMainLight;
 	}
 
-	if (g_inputManager.GetKeyDown(GLFW_KEY_I))
+	if (InputManager::getInstance().GetKeyDown(GLFW_KEY_I))
 	{
-		g_renderManager.ToggleSkybox();
+		RenderManager::getInstance().ToggleSkybox();
 	}
 
-	bool arrowUpDown = g_inputManager.GetKeyDown(GLFW_KEY_UP);
-	bool arrowDownDown = g_inputManager.GetKeyDown(GLFW_KEY_DOWN);
+	bool arrowUpDown = InputManager::getInstance().GetKeyDown(GLFW_KEY_UP);
+	bool arrowDownDown = InputManager::getInstance().GetKeyDown(GLFW_KEY_DOWN);
 
 	if (arrowUpDown || arrowDownDown)
 	{

@@ -10,7 +10,7 @@ UIObject::~UIObject()
 
 void UIObject::Initialize(Texture* tex)
 {
-	m_shader = g_shaderManager.GetShader("UIShader");
+	m_shader = ShaderManager::getInstance().GetShader("UIShader");
 	Initialize(m_shader, tex);
 }
 

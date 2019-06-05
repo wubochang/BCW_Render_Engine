@@ -1,15 +1,5 @@
 #include "ShaderManager.h"
 
-ShaderManager g_shaderManager;
-
-ShaderManager::ShaderManager()
-{
-}
-
-ShaderManager::~ShaderManager()
-{
-}
-
 void ShaderManager::Initialize()
 {
 	m_shaders = std::unordered_map<std::string, Shader*>();

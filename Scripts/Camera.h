@@ -12,6 +12,12 @@ public:
 	Camera(const Camera&);
 	~Camera();
 
+	static Camera& GetMainCamera()
+	{
+		static Camera instance;
+		return instance;
+	}
+
 	bool Initialize();
 	void Shutdown();
 
@@ -58,7 +64,5 @@ private:
 	void ProcessRotateEvent();
 	void ProcessMoveEvent();
 };
-
-extern Camera g_mainCamera;
 
 #endif // !_CAMERA_H_

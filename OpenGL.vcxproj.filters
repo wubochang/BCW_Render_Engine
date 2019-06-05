@@ -22,6 +22,7 @@
     <None Include="Shaders\shader.vs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scripts\Camera.cpp">
@@ -165,6 +166,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scripts\TextRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scripts\Misc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

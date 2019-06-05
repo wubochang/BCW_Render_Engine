@@ -17,6 +17,8 @@
 #include "Camera.h"
 #include "UIObject.h"
 
+#include "Misc.h"
+
 #include "FrameBuffer/FrameBuffer.h"
 #include "FrameBuffer/GBuffer.h"
 
@@ -27,9 +29,10 @@ class FrameBuffer;
 class GBuffer;
 class RenderManager
 {
+	MAKE_SINGLETON(RenderManager)
+
 public:
-	RenderManager();
-	~RenderManager();
+	~RenderManager() { };
 
 	void Initialize();
 	void Shutdown();
@@ -102,7 +105,5 @@ private:
 	void RenderLightMeshes_Debug(const glm::mat4x4 &proj, const glm::mat4x4 &view);
 	void RenderSkyBox(const glm::mat4x4 & view, const glm::mat4x4 & proj);
 };
-
-extern RenderManager g_renderManager;
 
 #endif // !_RENDER_MANAGER_H_

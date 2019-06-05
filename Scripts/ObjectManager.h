@@ -6,6 +6,7 @@
 #include "MeshLoader.h"
 #include "Light.h"
 #include "InputManager.h"
+#include "Misc.h"
 
 #include <vector>
 #include <unordered_map>
@@ -13,9 +14,11 @@
 
 class ObjectManager
 {
+	MAKE_SINGLETON(ObjectManager);
+
 public:
-	ObjectManager();
-	~ObjectManager();
+
+	~ObjectManager() {};
 
 	void Initialize();
 	void Update(double deltaTime);
@@ -64,7 +67,5 @@ private:
 
 	Mesh* m_cubeMesh;
 };
-
-extern ObjectManager g_objectManager;
 
 #endif // !_OBJECT_MANAGER_H_

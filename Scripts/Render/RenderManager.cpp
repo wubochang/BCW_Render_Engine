@@ -1,25 +1,14 @@
 #include "RenderManager.h"
 
-RenderManager g_renderManager;
-
-RenderManager::RenderManager()
-{
-	m_shader = nullptr;
-}
-
-RenderManager::~RenderManager()
-{
-}
-
 void RenderManager::Initialize()
 {
 	// init shaders
-	m_shader = g_shaderManager.GetShader("shader");
-	m_depthShader = g_shaderManager.GetShader("depthOnly");
-	m_lightShader = g_shaderManager.GetShader("light");
-	m_deferredGeoShader = g_shaderManager.GetShader("deferred_geometry");
-	m_deferredLightShader = g_shaderManager.GetShader("deferred_light");
-	m_skyboxShader = g_shaderManager.GetShader("skybox");
+	m_shader = ShaderManager::getInstance().GetShader("shader");
+	m_depthShader = ShaderManager::getInstance().GetShader("depthOnly");
+	m_lightShader = ShaderManager::getInstance().GetShader("light");
+	m_deferredGeoShader = ShaderManager::getInstance().GetShader("deferred_geometry");
+	m_deferredLightShader = ShaderManager::getInstance().GetShader("deferred_light");
+	m_skyboxShader = ShaderManager::getInstance().GetShader("skybox");
 
 	m_GBuffer = new GBuffer();
 	m_GBuffer->Initialize();
@@ -96,7 +85,7 @@ void RenderManager::InitDebugUI()
 	//m_uiObject->Initialize(m_GBuffer->GetGMetallicRoughnessAO()); // bind render texture to this ui for debug use
 
 	// for debugging depth map
-	//Shader* depthShader = g_shaderManager.GetShader("depthUI");
+	//Shader* depthShader = ShaderManager::getInstance().GetShader("depthUI");
 	//m_uiObject->Initialize(depthShader, m_depthFrameBuffer->GetTexture()); // bind render texture to this ui for debug use
 
 	//m_uiObject->screenPos = glm::vec2(150, 150);
@@ -114,7 +103,7 @@ void RenderManager::InitIBL()
 		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),		// front
 		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))		// back
 	};
-	Mesh* cubeMesh = g_objectManager.GetCubeMesh();
+	Mesh* cubeMesh = ObjectManager::getInstance().GetCubeMesh();
 
 	InitIrradianceMap(proj, views, cubeMesh);
 	InitPrefilteredColorMap(proj, views, cubeMesh);
@@ -130,7 +119,7 @@ void RenderManager::InitIrradianceMap(glm::mat4x4 &proj, glm::mat4  views[6], Me
 	m_irradianceMap = new CubeMap();
 	m_irradianceMap->Initialize(irradianceWidth, irradianceHeight);
 
-	m_irradianceShader = g_shaderManager.GetShader("irradiance");
+	m_irradianceShader = ShaderManager::getInstance().GetShader("irradiance");
 
 	m_irradianceFBO = new FrameBuffer();
 	m_irradianceFBO->Initialize(m_irradianceMap->GetWidth(), m_irradianceMap->GetHeight());
@@ -166,7 +155,7 @@ void RenderManager::InitPrefilteredColorMap(glm::mat4x4 &proj, glm::mat4  views[
 	m_prefilteredColorMap->Initialize(prefilterMapWidth, prefilterMapHeight);
 	m_prefilteredColorMap->EnableMipMap();
 
-	m_prefilterShader = g_shaderManager.GetShader("prefilter");
+	m_prefilterShader = ShaderManager::getInstance().GetShader("prefilter");
 
 	m_prefilterFBO = new FrameBuffer();
 	m_prefilterFBO->Initialize(m_prefilteredColorMap->GetWidth(), m_prefilteredColorMap->GetHeight());
@@ -224,10 +213,10 @@ void RenderManager::Shutdown()
 
 void RenderManager::Render()
 {
-	glm::mat4x4 proj = g_mainCamera.GetProjectionMatrix();
-	glm::mat4x4 view = g_mainCamera.GetViewMatrix();
+	glm::mat4x4 proj = Camera::GetMainCamera().GetProjectionMatrix();
+	glm::mat4x4 view = Camera::GetMainCamera().GetViewMatrix();
 
-	DirectionalLight* dirLight = g_objectManager.GetMainDirLight();
+	DirectionalLight* dirLight = ObjectManager::getInstance().GetMainDirLight();
 	glm::mat4x4 lightProj = dirLight->GetProjectionMatrix();
 	glm::mat4x4 lightView = dirLight->GetViewMatrix();
 
@@ -300,7 +289,7 @@ void RenderManager::DeferredGeometryPass(glm::mat4x4 &proj, glm::mat4x4 &view)
 		m_deferredGeoShader->SetMat4("projection", proj);
 		m_deferredGeoShader->SetMat4("view", view);
 
-		for (Object* obj : g_objectManager.GetObjects())
+		for (Object* obj : ObjectManager::getInstance().GetObjects())
 		{
 			glm::mat4x4 model = obj->GetTransform()->GetWorldMatrix();
 			m_deferredGeoShader->SetMat4("model", model);
@@ -332,9 +321,9 @@ void RenderManager::DeferredLightningPass(glm::mat4x4 &lightProj, glm::mat4x4 &l
 		m_deferredLightShader->SetCubeMap("irradianceMap", m_irradianceMap, 7);
 		m_deferredLightShader->SetCubeMap("prefilterMap", m_prefilteredColorMap, 11);
 		m_deferredLightShader->SetTexture("brdfLUT", m_brdfLUT, 12);
-		m_deferredLightShader->SetVec3("viewPos", g_mainCamera.GetPosition());
+		m_deferredLightShader->SetVec3("viewPos", Camera::GetMainCamera().GetPosition());
 
-		auto lights = g_objectManager.GetLights();
+		auto lights = ObjectManager::getInstance().GetLights();
 		for (unsigned int i = 0; i < lights.size(); i++)
 		{
 			Light* pLight = lights[i];
@@ -359,7 +348,7 @@ void RenderManager::RenderOpaqueObjects(const glm::mat4x4 &proj, const glm::mat4
 	//m_shader->SetMaterial(m_material);
 	m_shader->SetTexture("shadowMap", m_depthFrameBuffer->GetTexture(), 3);
 
-	auto lights = g_objectManager.GetLights();
+	auto lights = ObjectManager::getInstance().GetLights();
 	for (unsigned int i = 0; i < lights.size(); i++)
 	{
 		Light* pLight = lights[i];
@@ -367,11 +356,11 @@ void RenderManager::RenderOpaqueObjects(const glm::mat4x4 &proj, const glm::mat4
 	}
 	m_shader->SetMat4("projection", proj);
 	m_shader->SetMat4("view", view);
-	m_shader->SetVec3("viewPos", g_mainCamera.GetPosition());
+	m_shader->SetVec3("viewPos", Camera::GetMainCamera().GetPosition());
 	m_shader->SetMat4("lightProj", lightProj);
 	m_shader->SetMat4("lightView", lightView);
 
-	for (Object* obj : g_objectManager.GetObjects())
+	for (Object* obj : ObjectManager::getInstance().GetObjects())
 	{
 		glm::mat4x4 model = obj->GetTransform()->GetWorldMatrix();
 		m_shader->SetMat4("model", model);
@@ -394,7 +383,7 @@ void RenderManager::RenderDepthMap(const glm::mat4x4 & proj, const glm::mat4x4 &
 		m_depthShader->SetMat4("projection", proj);
 		m_depthShader->SetMat4("view", view);
 
-		for (Object* obj : g_objectManager.GetObjects())
+		for (Object* obj : ObjectManager::getInstance().GetObjects())
 		{
 			glm::mat4x4 model = obj->GetTransform()->GetWorldMatrix();
 			m_depthShader->SetMat4("model", model);
@@ -412,10 +401,10 @@ void RenderManager::RenderLightMeshes_Debug(const glm::mat4x4 &proj, const glm::
 	m_lightShader->SetMat4("projection", proj);
 	m_lightShader->SetMat4("view", view);
 
-	Mesh* cubeMesh = g_objectManager.GetCubeMesh();
+	Mesh* cubeMesh = ObjectManager::getInstance().GetCubeMesh();
 	cubeMesh->SetBuffers();
 
-	auto lights = g_objectManager.GetLights();
+	auto lights = ObjectManager::getInstance().GetLights();
 	for (Light* light : lights)
 	{
 		glm::mat4x4 model = light->GetTransform()->GetWorldMatrix();
@@ -428,7 +417,7 @@ void RenderManager::RenderLightMeshes_Debug(const glm::mat4x4 &proj, const glm::
 
 void RenderManager::RenderSkyBox(const glm::mat4x4 & view, const glm::mat4x4 & proj)
 {
-	Mesh* cubeMesh = g_objectManager.GetCubeMesh();
+	Mesh* cubeMesh = ObjectManager::getInstance().GetCubeMesh();
 	cubeMesh->SetBuffers();
 
 	// skybox

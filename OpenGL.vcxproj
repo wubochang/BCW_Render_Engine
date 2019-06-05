@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="packages.config" />
     <None Include="Shaders\shader.fs" />
     <None Include="Shaders\shader.vs" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Scripts\MaterialManager.h" />
     <ClInclude Include="Scripts\Mesh.h" />
     <ClInclude Include="Scripts\MeshLoader.h" />
+    <ClInclude Include="Scripts\Misc.h" />
     <ClInclude Include="Scripts\Object.h" />
     <ClInclude Include="Scripts\ObjectManager.h" />
     <ClInclude Include="Scripts\Render\RenderManager.h" />
@@ -174,6 +176,7 @@
     <ClInclude Include="Scripts\stb_image.h" />
     <ClInclude Include="Scripts\TextRenderer.h" />
     <ClInclude Include="Scripts\Texture.h" />
+    <ClInclude Include="Scripts\Timer.h" />
     <ClInclude Include="Scripts\Transform.h" />
     <ClInclude Include="Scripts\UIMesh.h" />
     <ClInclude Include="Scripts\UIObject.h" />

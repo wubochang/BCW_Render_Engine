@@ -1,7 +1,5 @@
 #include "Camera.h"
 
-Camera g_mainCamera;
-
 Camera::Camera()
 {
 	m_rotating = false;
@@ -71,15 +69,15 @@ void Camera::Update()
 
 void Camera::ProcessMoveEvent()
 {
-	bool movingPressed = g_inputManager.GetKey(GLFW_KEY_LEFT_ALT);
-	movingPressed &= g_inputManager.GetMouse(GLFW_MOUSE_BUTTON_MIDDLE);
+	bool movingPressed = InputManager::getInstance().GetKey(GLFW_KEY_LEFT_ALT);
+	movingPressed &= InputManager::getInstance().GetMouse(GLFW_MOUSE_BUTTON_MIDDLE);
 
 	if (movingPressed)
 	{
 		if (!m_moving)
 		{
 			m_moving = true;
-			m_mouseStartPos = g_inputManager.GetMousePosition();
+			m_mouseStartPos = InputManager::getInstance().GetMousePosition();
 			m_startPivot = m_pivot;
 		}
 	}
@@ -90,7 +88,7 @@ void Camera::ProcessMoveEvent()
 
 	if (m_moving)
 	{
-		glm::vec2 mousePos = g_inputManager.GetMousePosition();
+		glm::vec2 mousePos = InputManager::getInstance().GetMousePosition();
 		glm::vec2 diff = mousePos - m_mouseStartPos;
 
 		m_pivot = m_startPivot - diff.x * 0.005f * GetRight() + diff.y * 0.005f * GetUp();
@@ -100,14 +98,14 @@ void Camera::ProcessMoveEvent()
 void Camera::ProcessRotateEvent()
 {
 	// process input
-	bool rotatingPressed = g_inputManager.GetKey(GLFW_KEY_LEFT_ALT);
-	rotatingPressed &= g_inputManager.GetMouse(GLFW_MOUSE_BUTTON_LEFT);
+	bool rotatingPressed = InputManager::getInstance().GetKey(GLFW_KEY_LEFT_ALT);
+	rotatingPressed &= InputManager::getInstance().GetMouse(GLFW_MOUSE_BUTTON_LEFT);
 
 	if (rotatingPressed)
 	{
 		if (!m_rotating)
 		{
-			m_mouseStartPos = g_inputManager.GetMousePosition();
+			m_mouseStartPos = InputManager::getInstance().GetMousePosition();
 			m_startPhi = m_phi;
 			m_startTheta = m_theta;
 			m_rotating = true;
@@ -121,7 +119,7 @@ void Camera::ProcessRotateEvent()
 	// update position
 	if (m_rotating)
 	{
-		glm::vec2 mousePos = g_inputManager.GetMousePosition();
+		glm::vec2 mousePos = InputManager::getInstance().GetMousePosition();
 		glm::vec2 diff = mousePos - m_mouseStartPos;
 
 		m_phi = m_startPhi + glm::radians(diff.x);

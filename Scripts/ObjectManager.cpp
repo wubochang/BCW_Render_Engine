@@ -46,10 +46,10 @@ void ObjectManager::InitialObjects()
 	Mesh* m = GetMesh("box");
 	auto sphereMats = g_materialManager.GetMaterials({
 		"ConcreteMandala",
-		"Brick",
-		"Tile025",
+		//"Brick",
+		//"Tile025",
 		"MetalGrid",
-		"RustyPanel",
+		//"RustyPanel",
 		"ChippedMetal"
 		});
 

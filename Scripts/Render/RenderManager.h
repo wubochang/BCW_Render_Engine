@@ -7,6 +7,7 @@
 #include "Shader/Shader.h"
 #include "Shader/ShaderManager.h"
 #include "Texture.h"
+#include "TextRenderer.h"
 #include "CubeMap.h"
 #include "Object.h"
 #include "Vertex.h"

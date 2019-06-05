@@ -62,7 +62,9 @@ void RenderManager::Initialize()
 	m_screen->screenPos = glm::vec2(SCR_WIDTH, SCR_HEIGHT) * 0.5f;
 	m_screen->widthHeight = glm::vec2(SCR_WIDTH, SCR_HEIGHT);
 
-	m_skyBoxCubeMap = m_prefilteredColorMap;
+	g_textRenderer.Initialize();
+
+	m_skyBoxCubeMap = m_cubeMap;
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
@@ -70,7 +72,6 @@ void RenderManager::Initialize()
 
 void RenderManager::InitDebugUI()
 {
-
 	for (int i = 0; i < 4; i++)
 	{
 		UIObject* newUI = new UIObject();
@@ -262,8 +263,13 @@ void RenderManager::Render()
 	// render all debug UIs
 	for (auto ui : m_debugUIs)
 	{
-		ui->RenderUIObject(0.0);
+		ui->RenderUIObject(0.1);
 	}
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	g_textRenderer.RenderText("Sample Text", SCR_WIDTH - 300, SCR_HEIGHT - 50, 1.0f, glm::vec3(0.3f, 0.7f, 0.9f));
+	glDisable(GL_BLEND);
 	//m_uiObject->RenderUIObject(0.0);
 }
 

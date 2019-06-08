@@ -105,6 +105,7 @@ void Shader::SetMaterial(Material * mat)
 	SetTexture("material.metallic", mat->metallic, 2);
 	SetTexture("material.roughness", mat->roughness, 3);
 	SetTexture("material.AO", mat->AO, 4);
+	SetTexture("material.height", mat->height, 5);
 }
 
 void Shader::SetLight(Light * light)

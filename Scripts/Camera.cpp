@@ -38,7 +38,9 @@ glm::mat4x4 Camera::GetViewMatrix()
 
 glm::mat4x4 Camera::GetProjectionMatrix()
 {
-	glm::mat4x4 m_projectionMatrix = glm::perspective(glm::radians(60.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	float width = (float)RenderManager::getInstance().GetScreenWidth();
+	float height = (float)RenderManager::getInstance().GetScreenHeight();
+	glm::mat4x4 m_projectionMatrix = glm::perspective(glm::radians(60.0f), width / height, 0.1f, 100.0f);
 	return m_projectionMatrix;
 }
 

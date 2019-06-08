@@ -18,6 +18,7 @@ public:
 	void Initialize(std::vector<Vertex> verts, std::vector<unsigned int> indices);
 	void Shutdown();
 	void SetBuffers();
+	void UnbindBuffers();
 
 	int GetVertCnt()
 	{

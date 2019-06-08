@@ -76,22 +76,6 @@ void Texture::GenerateTexture(const GLenum & format, GLint internalFormat, int w
 {
 	glBindTexture(GL_TEXTURE_2D, m_textureID);
 
-	/*
-	internalFormat = format;
-	if (format == GL_RGB && type == GL_FLOAT)
-	{
-		internalFormat = GL_RGB32F;
-	}
-	if (format == GL_RGBA && type == GL_FLOAT)
-	{
-		//internalFormat = GL_RGBA16F;
-	}
-	if (format == GL_RED && type == GL_UNSIGNED_BYTE)
-	{
-		internalFormat = GL_R8;
-	}
-	*/
-
 	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -100,8 +84,17 @@ void Texture::GenerateTexture(const GLenum & format, GLint internalFormat, int w
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+
+	m_format = format;
+	m_internalFormat = internalFormat;
 	m_width = width;
 	m_height = height;
+	m_type = type;
+}
+
+void Texture::ResizeTexture(int newWidth, int newHeight)
+{
+	GenerateTexture(m_format, m_internalFormat, newWidth, newHeight, m_type, nullptr);
 }
 
 void Texture::SetBuffers(unsigned int slot)

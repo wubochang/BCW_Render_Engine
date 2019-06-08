@@ -12,6 +12,10 @@ out VS_OUT
 	vec4 vertColor;
 	vec2 texCoord;
 	mat3 TBN;
+
+	// for parallex occlusion
+	vec3 TangentViewPos;
+	vec3 TangentFragPos;
 } vs_out;
 
 uniform mat4 model;
@@ -19,6 +23,7 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 lightProj;
 uniform mat4 lightView;
+uniform vec3 viewPos;
 
 void main()
 {
@@ -28,6 +33,8 @@ void main()
 	vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
 	vec3 B = cross(N, T);
 	vs_out.TBN = mat3(T, B, N);
+	vs_out.TangentFragPos = vs_out.TBN * vs_out.FragPos;
+	vs_out.TangentViewPos = vs_out.TBN * viewPos;
 
 	vs_out.vertColor = aColor;
 	vs_out.texCoord = aTex;

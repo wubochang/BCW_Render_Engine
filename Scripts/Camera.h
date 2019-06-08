@@ -27,6 +27,7 @@ public:
 	void ProcessMouseScroll(double yoffset);
 
 	glm::vec3 GetPosition();
+	glm::vec3 GetPivot() { return m_pivot; }
 
 	void Update();
 

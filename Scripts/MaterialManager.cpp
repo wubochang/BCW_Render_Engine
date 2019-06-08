@@ -9,7 +9,8 @@ void MaterialManager::Initialize()
 		"../Textures/ConcreteMandala/normal.png",
 		"../Textures/ConcreteMandala/metallic.png",
 		"../Textures/ConcreteMandala/roughness.png",
-		"../Textures/ConcreteMandala/AO.png"
+		"../Textures/ConcreteMandala/AO.png",
+		"../Textures/ConcreteMandala/height.png"
 	);
 
 	AddNewMaterial("Brick",
@@ -63,10 +64,10 @@ void MaterialManager::AddNewMaterial(std::string name, Material * mat)
 	m_materials[name] = mat;
 }
 
-void MaterialManager::AddNewMaterial(std::string name, std::string albedoPath, std::string normalPath, std::string metallicPath, std::string roughnessPath, std::string AOPath)
+void MaterialManager::AddNewMaterial(std::string name, std::string albedoPath, std::string normalPath, std::string metallicPath, std::string roughnessPath, std::string AOPath, std::string heightPath /* = std::string() */)
 {
 	Material* mat = new Material();
-	mat->Initialize(albedoPath, normalPath, metallicPath, roughnessPath, AOPath);
+	mat->Initialize(albedoPath, normalPath, metallicPath, roughnessPath, AOPath, heightPath);
 
 	AddNewMaterial(name, mat);
 }

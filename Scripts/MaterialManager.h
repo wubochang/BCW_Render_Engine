@@ -19,7 +19,7 @@ public:
 
 	void AddNewMaterial(std::string name, Material* mat);
 
-	void AddNewMaterial(std::string name, std::string albedoPath, std::string normalPath, std::string metallicPath, std::string roughnessPath, std::string AOPath);
+	void AddNewMaterial(std::string name, std::string albedoPath, std::string normalPath, std::string metallicPath, std::string roughnessPath, std::string AOPath, std::string heightPath = std::string());
 
 	Material* GetMaterial(std::string name);
 	std::vector<Material*> GetMaterials(std::vector<std::string> names);

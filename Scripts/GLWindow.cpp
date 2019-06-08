@@ -26,6 +26,7 @@ bool GLWindow::Initialize(int width, int height)
 		glfwTerminate();
 		return false;
 	}
+
 	glfwMakeContextCurrent(m_window);
 	glfwSetFramebufferSizeCallback(m_window, GLWindow::framebuffer_size_callback);
 	glfwSetCursorPosCallback(m_window, InputManager::mouse_callback);
@@ -55,8 +56,8 @@ bool GLWindow::InitVSync()
 	wglGetSwapIntervalEXT = (PFNWGLEXTGETSWAPINTERVALPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
 
 
-	// disable vsync by default
-	SetVSyncState(false);
+	// enable vsync by default
+	SetVSyncState(true);
 	return true;
 }
 
@@ -70,6 +71,17 @@ void GLWindow::InitManagers()
 	RenderManager::getInstance().Initialize();
 	ShaderManager::getInstance().Initialize();
 	InputManager::getInstance().Initialize();
+
+	RenderManager::getInstance().ResizeScreen(SCR_WIDTH, SCR_HEIGHT);
+}
+
+void GLWindow::framebuffer_size_callback(GLFWwindow * window, int width, int height)
+{
+	// make sure the viewport matches the new window dimensions; note that width and 
+	// height will be significantly larger than specified on retina displays.
+	glViewport(0, 0, width, height);
+
+	RenderManager::getInstance().ResizeScreen(width, height);
 }
 
 void GLWindow::Shutdown()

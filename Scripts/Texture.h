@@ -29,6 +29,8 @@ public:
 	void SetParameteri(GLenum pname, GLint param);
 	void SetParameterfv(GLenum pname, const GLfloat* params);
 
+	// warning: resizing the texture WILL delete all content in the texture
+	void ResizeTexture(int newWidth, int newHeight);
 
 protected:
 
@@ -37,7 +39,12 @@ protected:
 	unsigned int m_width;
 	unsigned int m_height;
 
+	GLenum m_format;
+	GLenum m_internalFormat;
+	GLenum m_type;
+
 	void GenerateTexture(const GLenum & format, GLint internalFormat, int width, int height, GLenum type, unsigned char * data);
+
 
 };
 

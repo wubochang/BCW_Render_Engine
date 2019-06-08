@@ -42,7 +42,7 @@ void ObjectManager::InitialObjects()
 		//"Tile025",
 		"MetalGrid",
 		//"RustyPanel",
-		"ChippedMetal"
+		//"ChippedMetal"
 		});
 
 	/*

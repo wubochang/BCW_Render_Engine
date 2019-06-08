@@ -14,12 +14,21 @@ public:
 	Material(const Material&);
 	~Material();
 
-	void Initialize(std::string albedoPath, std::string normalPath, std::string metallicPath, std::string roughnessPath, std::string AOPath)
+	void Initialize(std::string albedoPath, std::string normalPath, std::string metallicPath, std::string roughnessPath, std::string AOPath, std::string heightPath = std::string())
 	{
-		Initialize(albedoPath.c_str(), normalPath.c_str(), metallicPath.c_str(), roughnessPath.c_str(), AOPath.c_str());
+#define CHECK_NULL(x) x.c_str()
+
+		Initialize(
+			CHECK_NULL(albedoPath),
+			CHECK_NULL(normalPath),
+			CHECK_NULL(metallicPath),
+			CHECK_NULL(roughnessPath),
+			CHECK_NULL(AOPath),
+			CHECK_NULL(heightPath)
+			);
 	}
 
-	void Initialize(const char* albedoPath, const char* normalPath, const char* metallicPath, const char* roughnessPath, const char* AOPath)
+	void Initialize(const char* albedoPath, const char* normalPath, const char* metallicPath, const char* roughnessPath, const char* AOPath, const char* heightPath)
 	{
 #define LOAD_TEXTURE(x)	x = new Texture(); x->Initialize(x##Path);
 
@@ -28,15 +37,26 @@ public:
 		LOAD_TEXTURE(metallic);
 		LOAD_TEXTURE(roughness);
 		LOAD_TEXTURE(AO);
+
+		if (std::strlen(heightPath) != 0)
+		{
+			LOAD_TEXTURE(height);
+		}
+		else
+		{
+			height = GetBlackTexture();
+		}
 	}
 
-	void Initialize(Texture* inAlbedo, Texture* inNormal, Texture* inMetallic, Texture* inRoughness, Texture* inAO)
+	// if some of the texture is null, use GetBlackTexture() to get a completely black one
+	void Initialize(Texture* inAlbedo, Texture* inNormal, Texture* inMetallic, Texture* inRoughness, Texture* inAO, Texture* inHeight)
 	{
 		albedo = inAlbedo;
 		normal = inNormal;
 		metallic = inMetallic;
 		roughness = inRoughness;
 		AO = inAO;
+		height = inHeight;
 	}
 
 	Texture* albedo;
@@ -44,7 +64,31 @@ public:
 	Texture* metallic;
 	Texture* roughness;
 	Texture* AO;
+	Texture* height;
 
+	// return a texture that every pixel is black
+	static Texture* GetBlackTexture()
+	{
+		static Texture* tex = nullptr;
+		if (tex == nullptr)
+		{
+			tex = new Texture();
+			tex->Initialize("../Textures/black.png");
+		}
+		return tex;
+	}
+
+	// return a texture that every pixel is white 
+	static Texture* GetWhiteTexture()
+	{
+		static Texture* tex = nullptr;
+		if (tex == nullptr)
+		{
+			tex = new Texture();
+			tex->Initialize("../Textures/white.png");
+		}
+		return tex;
+	}
 private:
 
 };

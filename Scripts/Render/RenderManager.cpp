@@ -2,6 +2,9 @@
 
 void RenderManager::Initialize()
 {
+	m_width = SCR_WIDTH;
+	m_height = SCR_HEIGHT;
+
 	// init shaders
 	m_shader = ShaderManager::getInstance().GetShader("shader");
 	m_depthShader = ShaderManager::getInstance().GetShader("depthOnly");
@@ -48,8 +51,8 @@ void RenderManager::Initialize()
 
 	m_screen = new UIObject();
 	m_screen->Initialize(m_frameBuffer->GetTexture());
-	m_screen->screenPos = glm::vec2(SCR_WIDTH, SCR_HEIGHT) * 0.5f;
-	m_screen->widthHeight = glm::vec2(SCR_WIDTH, SCR_HEIGHT);
+	m_screen->screenPos = glm::vec2(GetScreenWidth(), GetScreenHeight()) * 0.5f;
+	m_screen->widthHeight = glm::vec2(GetScreenWidth(), GetScreenHeight());
 
 	g_textRenderer.Initialize();
 
@@ -65,20 +68,22 @@ void RenderManager::InitDebugUI()
 	{
 		UIObject* newUI = new UIObject();
 		newUI->Initialize(m_GBuffer->GetGAlbedo());
+		newUI->screenPos = glm::vec2(75, 75 + (3 - i) * 150);
+		newUI->widthHeight = glm::vec2(150, 150);
 		m_debugUIs.push_back(newUI);
 	}
 
 	// from 0-3, top to bottom
-	m_debugUIs[0]->screenPos = glm::vec2(50, 350); // top most
+	//m_debugUIs[0]->screenPos = glm::vec2(50, 350); // top most
 	m_debugUIs[0]->SetTexture(m_GBuffer->GetGAlbedo());
 
-	m_debugUIs[1]->screenPos = glm::vec2(50, 250);
+	//m_debugUIs[1]->screenPos = glm::vec2(50, 250);
 	m_debugUIs[1]->SetTexture(m_GBuffer->GetGNormal());
 
-	m_debugUIs[2]->screenPos = glm::vec2(50, 150);
+	//m_debugUIs[2]->screenPos = glm::vec2(50, 150);
 	m_debugUIs[2]->SetTexture(m_brdfLUT);
 
-	m_debugUIs[3]->screenPos = glm::vec2(50, 50); // bottom most
+	//m_debugUIs[3]->screenPos = glm::vec2(50, 50); // bottom most
 	m_debugUIs[3]->SetTexture(m_GBuffer->GetGMetallicRoughnessAO());
 
 	//m_uiObject = new UIObject();
@@ -143,8 +148,10 @@ void RenderManager::InitIrradianceMap(glm::mat4x4 &proj, glm::mat4  views[6], Me
 			glDrawElements(GL_TRIANGLES, cubeMesh->GetVertCnt(), GL_UNSIGNED_INT, 0);
 		}
 	}
+
+	cubeMesh->UnbindBuffers();
 	m_irradianceFBO->UnbindFrameBuffer();
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	glViewport(0, 0, GetScreenWidth(), GetScreenHeight());
 }
 
 void RenderManager::InitPrefilteredColorMap(glm::mat4x4 &proj, glm::mat4  views[6], Mesh* cubeMesh)
@@ -160,11 +167,13 @@ void RenderManager::InitPrefilteredColorMap(glm::mat4x4 &proj, glm::mat4  views[
 	m_prefilterFBO = new FrameBuffer();
 	m_prefilterFBO->Initialize(m_prefilteredColorMap->GetWidth(), m_prefilteredColorMap->GetHeight());
 
+	cubeMesh->SetBuffers();
 	m_prefilterFBO->BindFrameBuffer();
 	{
 		m_prefilterShader->Use();
 		m_prefilterShader->SetCubeMap("environmentMap", m_cubeMap, 0);
 		m_prefilterShader->SetMat4("projection", proj);
+
 
 		unsigned int maxMipLevels = 5;
 		for (unsigned int mip = 0; mip < maxMipLevels; mip++)
@@ -192,7 +201,8 @@ void RenderManager::InitPrefilteredColorMap(glm::mat4x4 &proj, glm::mat4  views[
 		}
 	}
 	m_prefilterFBO->UnbindFrameBuffer();
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+	cubeMesh->UnbindBuffers();
+	glViewport(0, 0, GetScreenWidth(), GetScreenHeight());
 }
 
 void RenderManager::InitDepthFrameBuffer()
@@ -232,7 +242,7 @@ void RenderManager::Render()
 	// copy GBuffer's depth buffer to m_frameBuffer's depth texture
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer->GetFrameBuffer());
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_frameBuffer->GetFrameBuffer());
-	glBlitFramebuffer(0, 0, SCR_WIDTH, SCR_HEIGHT, 0, 0, SCR_WIDTH, SCR_HEIGHT, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	glBlitFramebuffer(0, 0, GetScreenWidth(), GetScreenHeight(), 0, 0, GetScreenWidth(), GetScreenHeight(), GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// then do the normal forward rendering 
@@ -260,17 +270,55 @@ void RenderManager::Render()
 	{
 		int fps = (int)round(1.0f / Timer::getInstance().GetDeltaTime());
 		std::string fpsStr = std::to_string(fps) + "FPS";
-		g_textRenderer.RenderText(fpsStr, SCR_WIDTH - 150, SCR_HEIGHT - 50, 0.8f, glm::vec3(0.3f, 0.7f, 0.9f));
+		g_textRenderer.RenderText(fpsStr, GetScreenWidth() - 150, GetScreenHeight() - 50, 0.8f, glm::vec3(0.3f, 0.7f, 0.9f));
+
+		auto pivot = Camera::GetMainCamera().GetPivot();
+		float x = pivot.x;
+		float y = pivot.y;
+		float z = pivot.z;
+
+		std::string pivotStr = "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")";
+		g_textRenderer.RenderText(pivotStr, GetScreenWidth() - 250, GetScreenHeight() - 100, 0.3f, glm::vec3(0.3f, 0.3f, 0.9f));
 	}
 	glDisable(GL_BLEND);
+
 	//m_uiObject->RenderUIObject(0.0);
+}
+
+void RenderManager::ToggleSkybox()
+{
+	if (m_skyBoxCubeMap == m_cubeMap)
+	{
+		m_skyBoxCubeMap = m_prefilteredColorMap;
+	}
+	else
+	{
+		if (m_skyBoxCubeMap == m_prefilteredColorMap)
+		{
+			m_skyBoxCubeMap = m_irradianceMap;
+		}
+		else
+		{
+			m_skyBoxCubeMap = m_cubeMap;
+		}
+	}
+}
+
+void RenderManager::ResizeScreen(int newWidth, int newHeight)
+{
+	m_width = newWidth;
+	m_height = newHeight;
+
+	m_GBuffer->Resize(newWidth, newHeight);
+
+	m_frameBuffer->Resize(newWidth, newHeight);
 }
 
 void RenderManager::ForwardRender(glm::mat4x4 &proj, glm::mat4x4 &view, glm::mat4x4 &lightProj, glm::mat4x4 &lightView)
 {
 	m_frameBuffer->BindFrameBuffer();
 	{
-		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+		glViewport(0, 0, GetScreenWidth(), GetScreenHeight());
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		RenderOpaqueObjects(proj, view, lightProj, lightView);
@@ -285,13 +333,14 @@ void RenderManager::DeferredGeometryPass(glm::mat4x4 &proj, glm::mat4x4 &view)
 	glEnable(GL_CULL_FACE);
 	m_GBuffer->BindFrameBuffer();
 	{
-		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+		glViewport(0, 0, GetScreenWidth(), GetScreenHeight());
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_deferredGeoShader->Use();
 		m_deferredGeoShader->SetMat4("projection", proj);
 		m_deferredGeoShader->SetMat4("view", view);
+		m_deferredGeoShader->SetVec3("viewPos", Camera::GetMainCamera().GetPosition());
 
 		for (Object* obj : ObjectManager::getInstance().GetObjects())
 		{
@@ -302,6 +351,7 @@ void RenderManager::DeferredGeometryPass(glm::mat4x4 &proj, glm::mat4x4 &view)
 
 			obj->GetMesh()->SetBuffers();
 			glDrawElements(GL_TRIANGLES, obj->GetMesh()->GetVertCnt(), GL_UNSIGNED_INT, 0);
+			obj->GetMesh()->UnbindBuffers();
 		}
 	}
 	m_GBuffer->UnbindFrameBuffer();
@@ -312,7 +362,7 @@ void RenderManager::DeferredLightningPass(glm::mat4x4 &lightProj, glm::mat4x4 &l
 {
 	m_frameBuffer->BindFrameBuffer();
 	{
-		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+		glViewport(0, 0, GetScreenWidth(), GetScreenHeight());
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -341,6 +391,7 @@ void RenderManager::DeferredLightningPass(glm::mat4x4 &lightProj, glm::mat4x4 &l
 
 		m_uiMesh->SetBuffers();
 		glDrawElements(GL_TRIANGLES, m_uiMesh->GetVertCnt(), GL_UNSIGNED_INT, 0);
+		m_uiMesh->UnbindBuffers();
 
 	}
 	m_frameBuffer->UnbindFrameBuffer();
@@ -372,6 +423,7 @@ void RenderManager::RenderOpaqueObjects(const glm::mat4x4 &proj, const glm::mat4
 
 		obj->GetMesh()->SetBuffers();
 		glDrawElements(GL_TRIANGLES, obj->GetMesh()->GetVertCnt(), GL_UNSIGNED_INT, 0);
+		obj->GetMesh()->UnbindBuffers();
 	}
 }
 
@@ -394,6 +446,7 @@ void RenderManager::RenderDepthMap(const glm::mat4x4 & proj, const glm::mat4x4 &
 
 			obj->GetMesh()->SetBuffers();
 			glDrawElements(GL_TRIANGLES, obj->GetMesh()->GetVertCnt(), GL_UNSIGNED_INT, 0);
+			obj->GetMesh()->UnbindBuffers();
 		}
 	}
 	m_depthFrameBuffer->UnbindFrameBuffer();
@@ -417,16 +470,18 @@ void RenderManager::RenderLightMeshes_Debug(const glm::mat4x4 &proj, const glm::
 
 		glDrawElements(GL_TRIANGLES, cubeMesh->GetVertCnt(), GL_UNSIGNED_INT, 0);
 	}
+
+	cubeMesh->UnbindBuffers();
 }
 
 void RenderManager::RenderSkyBox(const glm::mat4x4 & view, const glm::mat4x4 & proj)
 {
-	Mesh* cubeMesh = ObjectManager::getInstance().GetCubeMesh();
-	cubeMesh->SetBuffers();
-
 	// skybox
 	glDepthFunc(GL_LEQUAL);
 	{
+		Mesh* cubeMesh = ObjectManager::getInstance().GetCubeMesh();
+		cubeMesh->SetBuffers();
+
 		m_skyboxShader->Use();
 		glm::mat4 skyBoxView = glm::mat4(glm::mat3(view));
 		m_skyboxShader->SetMat4("projection", proj);
@@ -434,6 +489,9 @@ void RenderManager::RenderSkyBox(const glm::mat4x4 & view, const glm::mat4x4 & p
 		m_skyboxShader->SetCubeMap("skybox", m_skyBoxCubeMap, 1);
 
 		glDrawElements(GL_TRIANGLES, cubeMesh->GetVertCnt(), GL_UNSIGNED_INT, 0);
+
+		cubeMesh->UnbindBuffers();
 	}
+
 	glDepthFunc(GL_LESS);
 }

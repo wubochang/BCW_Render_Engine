@@ -124,3 +124,9 @@ void Mesh::SetBuffers()
 {
 	glBindVertexArray(m_VAO);
 }
+
+void Mesh::UnbindBuffers()
+{
+	glBindVertexArray(0);
+}
+

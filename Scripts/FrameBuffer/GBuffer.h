@@ -19,6 +19,8 @@ public:
 	Texture* GetGAlbedo();
 	Texture* GetGMetallicRoughnessAO();
 
+	void Resize(int newWidth, int newHeight);
+
 	void BindFrameBuffer()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
@@ -42,7 +44,11 @@ private:
 	Texture* m_gAlbedo;
 	Texture* m_gMetallicRoughnessAO;
 
+	Texture* m_textures[4];
+
 	unsigned int m_frameBuffer;
+	unsigned int m_renderBuffer;
+
 };
 
 #endif // !_GBUFFER_H_

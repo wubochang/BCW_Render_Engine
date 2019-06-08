@@ -39,26 +39,18 @@ public:
 
 	void Render();
 
-	void ToggleSkybox()
-	{
-		if (m_skyBoxCubeMap == m_cubeMap)
-		{
-			m_skyBoxCubeMap = m_prefilteredColorMap;
-		}
-		else
-		{
-			if (m_skyBoxCubeMap == m_prefilteredColorMap)
-			{
-				m_skyBoxCubeMap = m_irradianceMap;
-			}
-			else
-			{
-				m_skyBoxCubeMap = m_cubeMap;
-			}
-		}
-	}
+	void ToggleSkybox();
+
+	int GetScreenWidth() { return m_width; }
+	int GetScreenHeight() { return m_height; }
+
+	void ResizeScreen(int newWidth, int newHeight);
+
 
 private:
+
+	int m_width;
+	int m_height;
 
 	Shader* m_shader;
 	Shader* m_depthShader;

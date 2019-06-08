@@ -88,7 +88,7 @@ void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 {
 	m_textShader->Use();
 	m_textShader->SetVec3("textColor", color);
-	m_textShader->SetVec2("screenSize", glm::vec2(SCR_WIDTH, SCR_HEIGHT));
+	m_textShader->SetVec2("screenSize", glm::vec2(RenderManager::getInstance().GetScreenWidth(), RenderManager::getInstance().GetScreenHeight()));
 	m_textShader->SetInt("textTexture", 0);
 
 	m_uiMesh->SetBuffers();

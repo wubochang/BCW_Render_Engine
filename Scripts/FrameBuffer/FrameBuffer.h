@@ -15,6 +15,8 @@ public:
 	void Initialize(Texture* tex, GLenum attachment);
 	void Initialize(int width, int height);
 
+	void Resize(int newWidth, int newHeight);
+
 	void BindFrameBuffer();
 	void UnbindFrameBuffer();
 
@@ -32,6 +34,8 @@ protected:
 
 	Texture* m_texture;
 	unsigned int m_frameBuffer;
+	unsigned int m_renderBuffer;
+	GLenum m_attatchment;
 
 };
 

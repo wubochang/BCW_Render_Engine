@@ -41,10 +41,12 @@ public:
 		if (std::strlen(heightPath) != 0)
 		{
 			LOAD_TEXTURE(height);
+			needPOM = true;
 		}
 		else
 		{
 			height = GetBlackTexture();
+			needPOM = false;
 		}
 	}
 
@@ -65,6 +67,9 @@ public:
 	Texture* roughness;
 	Texture* AO;
 	Texture* height;
+
+	// need parallax occlusion mapping
+	bool needPOM;
 
 	// return a texture that every pixel is black
 	static Texture* GetBlackTexture()

@@ -11,7 +11,6 @@ void ObjectManager::Initialize()
 	InitialLights();
 
 	Camera::GetMainCamera().Initialize();
-	Camera::GetMainCamera().Initialize();
 }
 
 void ObjectManager::LoadMeshes()
@@ -38,6 +37,7 @@ void ObjectManager::InitialObjects()
 	Mesh* m = GetMesh("box");
 	auto sphereMats = MaterialManager::getInstance().GetMaterials({
 		"ConcreteMandala",
+		"SmoothMetal",
 		//"Brick",
 		//"Tile025",
 		"MetalGrid",
@@ -64,7 +64,7 @@ void ObjectManager::InitialObjects()
 
 	m = GetMesh("plane");
 	Object* plane = CreateObject(m);
-	plane->SetMaterial(sphereMats[0]);
+	plane->SetMaterial(sphereMats[1]);
 	plane->GetTransform()->SetPosition(glm::vec3(0, 0, 0));
 	plane->GetTransform()->SetScale(glm::vec3(8, 1, 8));
 

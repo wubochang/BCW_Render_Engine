@@ -9,7 +9,7 @@ void RenderManager::Initialize()
 	m_shader = ShaderManager::getInstance().GetShader("shader");
 	m_depthShader = ShaderManager::getInstance().GetShader("depthOnly");
 	m_lightShader = ShaderManager::getInstance().GetShader("light");
-	m_deferredGeoShader = ShaderManager::getInstance().GetShader("deferred_geometry");
+	m_deferredGeoShader = ShaderManager::getInstance().GetShader("deferred_geometry_pom");
 	m_deferredLightShader = ShaderManager::getInstance().GetShader("deferred_light");
 	m_skyboxShader = ShaderManager::getInstance().GetShader("skybox");
 
@@ -45,6 +45,7 @@ void RenderManager::Initialize()
 
 	InitDepthFrameBuffer();
 
+	// pre-render cube map for ambient environment light and reflection
 	InitIBL();
 
 	InitDebugUI();
@@ -156,8 +157,8 @@ void RenderManager::InitIrradianceMap(glm::mat4x4 &proj, glm::mat4  views[6], Me
 
 void RenderManager::InitPrefilteredColorMap(glm::mat4x4 &proj, glm::mat4  views[6], Mesh* cubeMesh)
 {
-	int prefilterMapWidth = 128;
-	int prefilterMapHeight = 128;
+	int prefilterMapWidth = 256;
+	int prefilterMapHeight = 256;
 	m_prefilteredColorMap = new	CubeMap();
 	m_prefilteredColorMap->Initialize(prefilterMapWidth, prefilterMapHeight);
 	m_prefilteredColorMap->EnableMipMap();
@@ -179,8 +180,8 @@ void RenderManager::InitPrefilteredColorMap(glm::mat4x4 &proj, glm::mat4  views[
 		for (unsigned int mip = 0; mip < maxMipLevels; mip++)
 		{
 			// reisze framebuffer according to mip-level size.
-			unsigned int mipWidth = 128 * std::pow(0.5, mip);
-			unsigned int mipHeight = 128 * std::pow(0.5, mip);
+			unsigned int mipWidth = prefilterMapWidth * std::pow(0.5, mip);
+			unsigned int mipHeight = prefilterMapHeight * std::pow(0.5, mip);
 			glBindRenderbuffer(GL_RENDERBUFFER, m_prefilterFBO->GetFrameBuffer());
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mipWidth, mipHeight);
 

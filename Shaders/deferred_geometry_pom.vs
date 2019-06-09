@@ -12,6 +12,9 @@ out VS_OUT
 	vec4 vertColor;
 	vec2 texCoord;
 	mat3 TBN;
+
+	// for parallax occlusion
+	vec3 TangentViewDir;
 } vs_out;
 
 uniform mat4 model;
@@ -29,6 +32,9 @@ void main()
 	vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
 	vec3 B = cross(N, T);
 	vs_out.TBN = mat3(T, B, N);
+
+	mat3 tranTBN = transpose(vs_out.TBN);
+	vs_out.TangentViewDir = normalize(tranTBN * (viewPos - vs_out.FragPos));
 
 	vs_out.vertColor = aColor;
 	vs_out.texCoord = aTex;

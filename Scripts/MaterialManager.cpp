@@ -3,6 +3,7 @@
 void MaterialManager::Initialize()
 {
 	m_materials = std::unordered_map<std::string, Material*>();
+	//m_workingDirectory = workingDirectory;
 
 	AddNewMaterial("ConcreteMandala",
 		"../Textures/ConcreteMandala/albedo.png",
@@ -53,6 +54,14 @@ void MaterialManager::Initialize()
 		"../Textures/ChippedMetal/roughness.png",
 		"../Textures/ChippedMetal/chipped-paint-ao.png"
 	);
+
+	AddNewMaterial("SmoothMetal",
+		"../Textures/SmoothMetal/albedo.png",
+		"../Textures/SmoothMetal/normal.png",
+		"../Textures/SmoothMetal/metallic.png",
+		"../Textures/SmoothMetal/roughness.png",
+		"../Textures/SmoothMetal/AO.png"
+	);
 }
 
 void MaterialManager::AddNewMaterial(std::string name, Material * mat)
@@ -66,6 +75,8 @@ void MaterialManager::AddNewMaterial(std::string name, Material * mat)
 
 void MaterialManager::AddNewMaterial(std::string name, std::string albedoPath, std::string normalPath, std::string metallicPath, std::string roughnessPath, std::string AOPath, std::string heightPath /* = std::string() */)
 {
+#define ABSOLUTE_PATH(x) m_workingDirectory + x##Path
+
 	Material* mat = new Material();
 	mat->Initialize(albedoPath, normalPath, metallicPath, roughnessPath, AOPath, heightPath);
 

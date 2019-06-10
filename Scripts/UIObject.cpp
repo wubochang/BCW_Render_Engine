@@ -18,8 +18,7 @@ void UIObject::Initialize(Shader * shader, Texture * tex)
 {
 	m_shader = shader;
 
-	m_mesh = new UIMesh();
-	m_mesh->Initialize();
+	m_mesh = UIMesh::GetMesh();
 
 	if (tex == nullptr)
 	{

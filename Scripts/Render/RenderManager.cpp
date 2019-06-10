@@ -16,8 +16,7 @@ void RenderManager::Initialize()
 	m_GBuffer = new GBuffer();
 	m_GBuffer->Initialize();
 
-	m_uiMesh = new UIMesh();
-	m_uiMesh->Initialize();
+	m_uiMesh = UIMesh::GetMesh();
 
 	m_cubeMap = new CubeMap();
 	m_cubeMap->Initialize("../Textures/ame_limon", 
@@ -175,7 +174,6 @@ void RenderManager::InitPrefilteredColorMap(glm::mat4x4 &proj, glm::mat4  views[
 		m_prefilterShader->SetCubeMap("environmentMap", m_cubeMap, 0);
 		m_prefilterShader->SetMat4("projection", proj);
 
-
 		unsigned int maxMipLevels = 5;
 		for (unsigned int mip = 0; mip < maxMipLevels; mip++)
 		{
@@ -224,6 +222,11 @@ void RenderManager::Shutdown()
 
 void RenderManager::Render()
 {
+	// render should be in order of:
+	// 1. Shadow map
+	// 2. G-buffer
+	// 3. Directional Light
+	// 4. Point Light
 	glm::mat4x4 proj = Camera::GetMainCamera().GetProjectionMatrix();
 	glm::mat4x4 view = Camera::GetMainCamera().GetViewMatrix();
 
@@ -231,11 +234,11 @@ void RenderManager::Render()
 	glm::mat4x4 lightProj = dirLight->GetProjectionMatrix();
 	glm::mat4x4 lightView = dirLight->GetViewMatrix();
 
-	// deferred geometry pass, render everything into G buffer
-	DeferredGeometryPass(proj, view);
-
 	// render depth
 	RenderDepthMap(lightProj, lightView);
+
+	// deferred geometry pass, render everything into G buffer
+	DeferredGeometryPass(proj, view);
 
 	// deferred lightning pass
 	DeferredLightningPass(lightProj, lightView);

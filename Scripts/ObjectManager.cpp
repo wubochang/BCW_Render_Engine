@@ -64,7 +64,7 @@ void ObjectManager::InitialObjects()
 
 	m = GetMesh("plane");
 	Object* plane = CreateObject(m);
-	plane->SetMaterial(sphereMats[0]);
+	plane->SetMaterial(sphereMats[1]);
 	plane->GetTransform()->SetPosition(glm::vec3(0, 0, 0));
 	plane->GetTransform()->SetScale(glm::vec3(8, 1, 8));
 
@@ -83,7 +83,7 @@ void ObjectManager::InitialObjects()
 	{
 		Object* sphere = CreateObject(m);
 		sphere->SetMaterial(sphereMats[i]);
-		sphere->GetTransform()->SetPosition(glm::vec3(3, 2.1, (i - (sphereNum - 1)/2.0f) * 2.5f));
+		sphere->GetTransform()->SetPosition(glm::vec3(3, 1.1, (i - (sphereNum - 1)/2.0f) * 2.5f));
 		sphere->GetTransform()->SetScale(glm::vec3(1));
 	}
 }

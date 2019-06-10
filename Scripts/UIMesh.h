@@ -15,9 +15,20 @@ public:
 	UIMesh();
 	~UIMesh();
 
-	void Initialize();
+	static UIMesh* GetMesh()
+	{
+		static UIMesh* mesh = nullptr;
+		if (mesh == nullptr)
+		{
+			mesh = new UIMesh();
+			mesh->Initialize();
+		}
+		return mesh;
+	}
 
 private:
+
+	void Initialize();
 };
 
 #endif // !_UI_MESH_H_

@@ -78,8 +78,7 @@ bool TextRenderer::Initialize()
 
 	// init shader
 	m_textShader = ShaderManager::getInstance().GetShader("TextShader");
-	m_uiMesh = new UIMesh();
-	m_uiMesh->Initialize();
+	m_uiMesh = UIMesh::GetMesh();
 
 	return res;
 }

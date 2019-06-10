@@ -41,8 +41,8 @@ public:
 
 	void ToggleSkybox();
 
-	int GetScreenWidth() { return m_width; }
-	int GetScreenHeight() { return m_height; }
+	inline int GetScreenWidth() { return m_width; }
+	inline int GetScreenHeight() { return m_height; }
 
 	void ResizeScreen(int newWidth, int newHeight);
 

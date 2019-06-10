@@ -47,7 +47,7 @@ void PointLight::Initialize()
 
 	m_pointLightIdx = s_pointLightCnt;
 	s_pointLightCnt += 1;
-	constant = 0.2f;
+	constant = 0.1f;
 	linear = 0.09f;
 	quadratic = 0.032f;
 }

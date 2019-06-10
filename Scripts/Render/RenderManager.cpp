@@ -273,13 +273,9 @@ void RenderManager::Render()
 		std::string fpsStr = std::to_string(fps) + "FPS";
 		g_textRenderer.RenderText(fpsStr, GetScreenWidth() - 150, GetScreenHeight() - 50, 0.8f, glm::vec3(0.3f, 0.7f, 0.9f));
 
-		auto pivot = Camera::GetMainCamera().GetPivot();
-		float x = pivot.x;
-		float y = pivot.y;
-		float z = pivot.z;
 
-		std::string pivotStr = "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")";
-		g_textRenderer.RenderText(pivotStr, GetScreenWidth() - 250, GetScreenHeight() - 100, 0.3f, glm::vec3(0.3f, 0.3f, 0.9f));
+		std::string heightScaleStr = std::to_string(MaterialManager::getInstance().GetMaterial("ConcreteMandala")->heightScale);
+		g_textRenderer.RenderText(heightScaleStr, GetScreenWidth() - 250, GetScreenHeight() - 50, 0.5f, glm::vec3(0.3f, 0.3f, 0.9f));
 	}
 	glDisable(GL_BLEND);
 

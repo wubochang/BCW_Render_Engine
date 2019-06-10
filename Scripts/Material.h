@@ -42,6 +42,7 @@ public:
 		{
 			LOAD_TEXTURE(height);
 			needPOM = true;
+			heightScale = 0.01f;
 		}
 		else
 		{
@@ -70,6 +71,7 @@ public:
 
 	// need parallax occlusion mapping
 	bool needPOM;
+	float heightScale;
 
 	// return a texture that every pixel is black
 	static Texture* GetBlackTexture()

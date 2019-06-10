@@ -14,6 +14,7 @@ struct Material {
 
     // need parallax occlusion mapping
     bool needPOM;
+    float heightScale;
 }; 
 
 in VS_OUT
@@ -37,8 +38,8 @@ void main()
     {
 	    vec3 tangentViewDir = normalize(fs_in.TangentViewDir);
 	    texCoord = ParallaxMapping(fs_in.texCoord, tangentViewDir);
-	    if(texCoord.x > 1.0 || texCoord.y > 1.0 || texCoord.x < 0.0 || texCoord.y < 0.0)
-            discard;
+	    //if(texCoord.x > 1.0 || texCoord.y > 1.0 || texCoord.x < 0.0 || texCoord.y < 0.0)
+            //discard;
     }
 
     gPosition = fs_in.FragPos;
@@ -68,7 +69,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
     // depth of current layer
     float currentLayerDepth = 0.0;
     // the amount to shift the texture coordinates per layer (from vector P)
-    vec2 P = viewDir.xy / viewDir.z * 0.02; //height_scale; 
+    vec2 P = viewDir.xy / viewDir.z  * material.heightScale; 
     vec2 deltaTexCoords = P / numLayers;
   
     // get initial values

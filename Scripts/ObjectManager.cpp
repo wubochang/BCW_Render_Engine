@@ -64,7 +64,7 @@ void ObjectManager::InitialObjects()
 
 	m = GetMesh("plane");
 	Object* plane = CreateObject(m);
-	plane->SetMaterial(sphereMats[1]);
+	plane->SetMaterial(sphereMats[0]);
 	plane->GetTransform()->SetPosition(glm::vec3(0, 0, 0));
 	plane->GetTransform()->SetScale(glm::vec3(8, 1, 8));
 
@@ -75,6 +75,15 @@ void ObjectManager::InitialObjects()
 		Object* sphere = CreateObject(m);
 		sphere->SetMaterial(sphereMats[i]);
 		sphere->GetTransform()->SetPosition(glm::vec3(0, 2.1, (i - (sphereNum - 1)/2.0f) * 2.5f));
+		sphere->GetTransform()->SetScale(glm::vec3(1));
+	}
+
+	m = GetCubeMesh();
+	for (int i = 0; i < sphereNum; i++)
+	{
+		Object* sphere = CreateObject(m);
+		sphere->SetMaterial(sphereMats[i]);
+		sphere->GetTransform()->SetPosition(glm::vec3(3, 2.1, (i - (sphereNum - 1)/2.0f) * 2.5f));
 		sphere->GetTransform()->SetScale(glm::vec3(1));
 	}
 }
@@ -110,11 +119,16 @@ void ObjectManager::Update()
 
 	if (arrowUpDown || arrowDownDown)
 	{
-		float factor = -0.5f;
+		float factor = 0.01f;
 		if (arrowUpDown)
 		{
 			factor *= -1;
 		}
+
+		static Material* mat = MaterialManager::getInstance().GetMaterial("ConcreteMandala");
+		mat->heightScale += factor;
+
+		/*
 		for (unsigned int i = 0; i < m_lights.size() - 1; i++)
 		{
 			PointLight* pLight = dynamic_cast<PointLight*>(m_lights[i]);
@@ -132,6 +146,7 @@ void ObjectManager::Update()
 
 			std::cout << "Radius for point light[" << i << "]:" << radius << std::endl;
 		}
+		*/
 	}
 }
 

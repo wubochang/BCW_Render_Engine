@@ -73,7 +73,9 @@ void main()
 
 	vec4 FragPosLightSpace = lightProj * lightView * vec4(fragPos, 1.0);
 
-    vec3 Lo = CalcDirLight(dirLight, normal, fragPos, viewDir, albedo, metallicRoughnessAO, FragPosLightSpace);
+    vec3 Lo = vec3(0);
+
+    Lo = CalcDirLight(dirLight, normal, fragPos, viewDir, albedo, metallicRoughnessAO, FragPosLightSpace);
 
 	for(int i = 0; i < pointLightNum; i++)
     {

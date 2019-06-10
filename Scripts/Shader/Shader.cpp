@@ -107,6 +107,7 @@ void Shader::SetMaterial(Material * mat)
 	SetTexture("material.AO", mat->AO, 4);
 	SetTexture("material.height", mat->height, 5);
 	SetBool("material.needPOM", mat->needPOM);
+	SetFloat("material.heightScale", mat->heightScale);
 }
 
 void Shader::SetLight(Light * light)

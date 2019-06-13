@@ -2,17 +2,27 @@
 #define _MESH_LOADER_H_
 
 #include "Mesh.h"
+#include "Misc.h"
 #include "ObjectManager.h"
+// use fbxsdk
+#include <fbxsdk.h>
+
+// or assimp, both supported
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 class MeshLoader
 {
+	MAKE_SINGLETON(MeshLoader)
+
 public:
-	MeshLoader();
+
 	~MeshLoader();
 
 	std::vector<Mesh*> LoadFromList(std::vector<std::string> filePaths);
 
-	std::string RelativeToAbsolutePath(std::string str)
+	static std::string RelativeToAbsolutePath(std::string str)
 	{
 		char dir[256];
 		char* fileExt;
@@ -23,7 +33,18 @@ public:
 
 private:
 
-	void LoadFromFBX(std::string filePath, std::vector<Mesh*>& meshes);
+#pragma region Assimp
+
+	void LoadFromFBX_assimp(std::string filePath, std::vector<Mesh*>& meshes);
+
+	void ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh*>& meshes);
+	Mesh* ProcessMesh(aiMesh* mesh);
+
+#pragma endregion
+
+#pragma region FBXSDK
+	// load mesh using fbxsdk and store it in meshes
+	void LoadFromFBX_fbxsdk(std::string filePath, std::vector<Mesh*>& meshes);
 
 	Mesh* LoadMesh(fbxsdk::FbxMesh * pMesh);
 
@@ -31,8 +52,8 @@ private:
 	bool ReadUV(FbxMesh* pMesh, int ctrlPointIndex, int textureUVIndex, int uvLayer, FbxVector2* pUV);
 	void ReadNormal(FbxMesh* pMesh, int ctrlPointIndex, int vertexCounter, FbxVector4* pNormal);
 	void ReadTangent(FbxMesh* pMesh, int ctrlPointIndex, int vertecCounter, FbxVector4* pTangent);
+#pragma endregion
 };
 
-extern MeshLoader g_meshLoader;
 #endif // !_MESH_LOADER_H_
 

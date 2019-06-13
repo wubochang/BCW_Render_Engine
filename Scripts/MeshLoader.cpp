@@ -1,26 +1,99 @@
 #include "MeshLoader.h"
 
-MeshLoader g_meshLoader;
-
-MeshLoader::MeshLoader()
-{
-}
-
 MeshLoader::~MeshLoader()
 {
 }
 
 std::vector<Mesh*> MeshLoader::LoadFromList(std::vector<std::string> filePaths)
 {
-	std::vector<Mesh*> meshes;
-	for (int i = 0; i < filePaths.size(); i++)
+	std::vector<Mesh*> fbxsdkMeshes;
+	std::vector<Mesh*> aiMeshes;
+	for (unsigned int i = 0; i < filePaths.size(); i++)
 	{
-		LoadFromFBX(filePaths[i], meshes);
+		LoadFromFBX_fbxsdk(filePaths[i], fbxsdkMeshes);
+		LoadFromFBX_assimp(filePaths[i], aiMeshes);
 	}
-	return meshes;
+	return aiMeshes;
 }
 
-void MeshLoader::LoadFromFBX(std::string filePath, std::vector<Mesh*>& meshes)
+void MeshLoader::LoadFromFBX_assimp(std::string filePath, std::vector<Mesh*>& meshes)
+{
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
+
+	if (!scene || (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) || !scene->mRootNode)
+	{
+		std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+		return;
+	}
+
+	ProcessNode(scene->mRootNode, scene, meshes);
+}
+
+void MeshLoader::ProcessNode(aiNode * node, const aiScene* scene, std::vector<Mesh*>& meshes)
+{
+	for (unsigned int i = 0; i < node->mNumMeshes; i++)
+	{
+		Mesh* m = ProcessMesh(scene->mMeshes[node->mMeshes[i]]);
+		m->name = std::string(node->mName.C_Str());
+		meshes.push_back(m);
+	}
+
+	for (unsigned int i = 0; i < node->mNumChildren; i++)
+	{
+		ProcessNode(node->mChildren[i], scene, meshes);
+	}
+}
+
+Mesh * MeshLoader::ProcessMesh(aiMesh * mesh)
+{
+	std::vector<Vertex> verts;
+	std::vector<unsigned int> indices;
+
+	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+	{
+		Vertex vertex;
+		vertex.position.x = mesh->mVertices[i].x;
+		vertex.position.y = mesh->mVertices[i].y;
+		vertex.position.z = mesh->mVertices[i].z;
+
+		vertex.color = glm::vec4(1.0f);
+		/*
+		vertex.color.x = mesh->mColors[i]->r;
+		vertex.color.y = mesh->mColors[i]->g;
+		vertex.color.z = mesh->mColors[i]->b;
+		vertex.color.w = mesh->mColors[i]->a;
+		*/
+
+		vertex.normal.x = mesh->mNormals[i].x;
+		vertex.normal.y = mesh->mNormals[i].y;
+		vertex.normal.z = mesh->mNormals[i].z;
+
+		vertex.tangent.x = mesh->mTangents[i].x;
+		vertex.tangent.y = mesh->mTangents[i].y;
+		vertex.tangent.z = mesh->mTangents[i].z;
+
+		vertex.uv.x = mesh->mTextureCoords[0][i].x;
+		vertex.uv.y = mesh->mTextureCoords[0][i].y;
+
+		verts.push_back(vertex);
+	}
+
+	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+	{
+		aiFace face = mesh->mFaces[i];
+		for (unsigned int j = 0; j < face.mNumIndices; j++)
+		{
+			indices.push_back(face.mIndices[j]);
+		}
+	}
+
+	Mesh* m = new Mesh();
+	m->Initialize(verts, indices);
+	return m;
+}
+
+void MeshLoader::LoadFromFBX_fbxsdk(std::string filePath, std::vector<Mesh*>& meshes)
 {
 
 	auto pFbxSdkManager = FbxManager::Create();

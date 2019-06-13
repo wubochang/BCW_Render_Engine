@@ -7,7 +7,6 @@
 #include "Vertex.h"
 
 #include <vector>
-#include <fbxsdk.h>
 
 class Mesh
 {

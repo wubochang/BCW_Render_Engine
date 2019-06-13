@@ -103,7 +103,8 @@ void Mesh::InitBuffers()
 	glEnableVertexAttribArray(4);
 
 	// unbind vertex array
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	// unbind VAO
 	glBindVertexArray(0);
 }

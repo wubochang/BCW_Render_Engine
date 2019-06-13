@@ -17,15 +17,22 @@ void ObjectManager::LoadMeshes()
 {
 	std::vector<std::string> filePaths =
 	{
-		g_meshLoader.RelativeToAbsolutePath("../Assets/box.fbx"),
-		g_meshLoader.RelativeToAbsolutePath("../Assets/hammer.fbx"),
-		g_meshLoader.RelativeToAbsolutePath("../Assets/plane.fbx"),
-		g_meshLoader.RelativeToAbsolutePath("../Assets/sphere.fbx"),
+		/*
+		("../Assets/nevermore/shadow_fiend_econ.fbx"),
+		("../Assets/sphere.fbx"),
+		("../Assets/box.fbx"),
+		("../Assets/hammer.fbx"),
+		("../Assets/plane.fbx")
+		*/
+		MeshLoader::RelativeToAbsolutePath("../Assets/box.fbx"),
+		MeshLoader::RelativeToAbsolutePath("../Assets/hammer.fbx"),
+		MeshLoader::RelativeToAbsolutePath("../Assets/plane.fbx"),
+		MeshLoader::RelativeToAbsolutePath("../Assets/sphere.fbx"),
 	};
 
-	std::vector<Mesh*> meshes = g_meshLoader.LoadFromList(filePaths);
+	std::vector<Mesh*> meshes = MeshLoader::getInstance().LoadFromList(filePaths);
 
-	for (int i = 0; i < meshes.size(); i++)
+	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
 		Mesh* mesh = meshes[i];
 		m_meshes[mesh->name] = mesh;
@@ -38,11 +45,11 @@ void ObjectManager::InitialObjects()
 	auto sphereMats = MaterialManager::getInstance().GetMaterials({
 		"ConcreteMandala",
 		"SmoothMetal",
-		//"Brick",
-		//"Tile025",
+		"Brick",
+		"Tile025",
 		"MetalGrid",
-		//"RustyPanel",
-		//"ChippedMetal"
+		"RustyPanel",
+		"ChippedMetal"
 		});
 
 	/*
@@ -64,7 +71,7 @@ void ObjectManager::InitialObjects()
 
 	m = GetMesh("plane");
 	Object* plane = CreateObject(m);
-	plane->SetMaterial(sphereMats[1]);
+	plane->SetMaterial(sphereMats[0]);
 	plane->GetTransform()->SetPosition(glm::vec3(0, 0, 0));
 	plane->GetTransform()->SetScale(glm::vec3(8, 1, 8));
 
@@ -74,7 +81,7 @@ void ObjectManager::InitialObjects()
 	{
 		Object* sphere = CreateObject(m);
 		sphere->SetMaterial(sphereMats[i]);
-		sphere->GetTransform()->SetPosition(glm::vec3(0, 2.1, (i - (sphereNum - 1)/2.0f) * 2.5f));
+		sphere->GetTransform()->SetPosition(glm::vec3(0, 1.5, (i - (sphereNum - 1)/2.0f) * 2.5f));
 		sphere->GetTransform()->SetScale(glm::vec3(1));
 	}
 
@@ -84,7 +91,7 @@ void ObjectManager::InitialObjects()
 		Object* sphere = CreateObject(m);
 		sphere->SetMaterial(sphereMats[i]);
 		sphere->GetTransform()->SetPosition(glm::vec3(3, 1.1, (i - (sphereNum - 1)/2.0f) * 2.5f));
-		sphere->GetTransform()->SetScale(glm::vec3(1));
+		sphere->GetTransform()->SetScale(glm::vec3(2));
 	}
 }
 

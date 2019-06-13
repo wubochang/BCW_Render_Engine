@@ -266,7 +266,7 @@ void RenderManager::Render()
 	// render all debug UIs
 	for (auto ui : m_debugUIs)
 	{
-		ui->RenderUIObject(0.1);
+		ui->RenderUIObject(0.1f);
 	}
 
 	glEnable(GL_BLEND);
